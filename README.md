@@ -1,1 +1,1 @@
-# ROSCPP_Teamplate
+# ROS robotics project using C++ and OpenCV
