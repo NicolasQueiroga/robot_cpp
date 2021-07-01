@@ -2,13 +2,13 @@
 <package format="2">
 
 
-  <name>ROSCPP_Teamplate</name>
+  <name>robot_cpp</name>
   <version>1.0.0</version>
-  <description>Teamplate package for ROSCPP with OpenCV</description>
+  <description>ROSCPP project</description>
 
   <maintainer email="n.macielqueiroga@gmail.com">Nicolas Maciel Queiroga</maintainer>
   <license>BSD</license>
-  <url type="website">http://github.com/NicolasQueiroga</url>
+  <url type="website">http://github.com/NicolasQueiroga/robot_cpp</url>
   <author email="n.macielqueiroga@gmail.com">Nicolas Maciel Queiroga</author>
 
   <buildtool_depend>catkin</buildtool_depend>

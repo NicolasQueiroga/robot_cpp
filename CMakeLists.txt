@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ROSCPP_Teamplate VERSION 1.0.0)
+project(robot_cpp VERSION 1.0.0)
 
 
 find_package(catkin REQUIRED COMPONENTS
