@@ -34,6 +34,6 @@ include_directories(
 )
 
 
-add_executable(main src/main.cpp)
-target_link_libraries(main ${catkin_LIBRARIES} Auxiliar ${OpenCV_LIBRARIES})
-ADD_DEPENDENCIES(main ${${PROJECT_NAME}_EXPORTED_TARGETS} Auxiliar ${OpenCV_LIBRARIES} ${catkin_EXPORTED_TARGETS})
+add_executable(run src/main.cpp)
+target_link_libraries(run ${catkin_LIBRARIES} Auxiliar ${OpenCV_LIBRARIES})
+ADD_DEPENDENCIES(run ${${PROJECT_NAME}_EXPORTED_TARGETS} Auxiliar ${OpenCV_LIBRARIES} ${catkin_EXPORTED_TARGETS})

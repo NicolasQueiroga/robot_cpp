@@ -14,8 +14,6 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <vector>
-#include <string>
 
 /* Function Deffinitions */
 std::vector<int> colorPicker(std::string path = "");

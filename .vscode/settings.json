@@ -7,5 +7,21 @@
 		"/home/nicolas/catkin_ws/devel/lib/python3/dist-packages",
 		"/opt/ros/noetic/lib/python3/dist-packages"
 	],
-	"cmake.configureOnOpen": false
+	"cmake.configureOnOpen": false,
+	"files.associations": {
+		"iostream": "cpp",
+		"*.ipp": "cpp",
+		"*.tcc": "cpp",
+		"random": "cpp",
+		"algorithm": "cpp",
+		"bit": "cpp",
+		"bitset": "cpp",
+		"chrono": "cpp",
+		"condition_variable": "cpp",
+		"istream": "cpp",
+		"limits": "cpp",
+		"mutex": "cpp",
+		"streambuf": "cpp",
+		"thread": "cpp"
+	}
 }
