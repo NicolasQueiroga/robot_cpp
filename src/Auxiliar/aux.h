@@ -6,10 +6,8 @@
 #  Version:          0.0.1
 =============================================================================*/
 
-
 #ifndef AUX_H
 #define AUX_H
-
 
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
@@ -33,6 +31,5 @@ double getAngleWithVertical(double m);
 std::vector<cv::Point> getAllContoursCenter(cv::Mat bgr, std::vector<std::vector<cv::Point>> contours, cv::Rect roi, std::string direction = "");
 cv::Rect cropImg(cv::Mat bgr, std::string direction = "");
 double linearRegression(cv::Mat bgr, std::string direction = "");
-
 
 #endif
