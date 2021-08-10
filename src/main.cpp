@@ -45,6 +45,7 @@ public:
 		pos = cv::Point(0, 0);
 		laser_dist = 0.0;
 	}
+	~Robot() {}
 
 	void odomCB(const nav_msgs::Odometry::ConstPtr &msg)
 	{
