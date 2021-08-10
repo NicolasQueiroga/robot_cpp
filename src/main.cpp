@@ -15,12 +15,13 @@
 #include <cv_bridge/cv_bridge.h>
 #include <image_transport/image_transport.h>
 #include <iostream>
+#include <string>
 #include <math.h>
 
 using namespace std;
 using namespace cv;
 
-class Info
+class Robot
 {
 protected:
 	image_transport::Subscriber img_sub;
@@ -31,20 +32,18 @@ protected:
 	geometry_msgs::Pose2D pose2d;
 	geometry_msgs::Twist msg;
 	cv::Point2d pos;
-	float dist;
-	double rad;
+	float laser_dist;
 
 public:
-	Info(ros::NodeHandle *nh)
+	Robot(ros::NodeHandle *nh)
 	{
 		image_transport::ImageTransport it(*nh);
-		img_sub = it.subscribe("/camera/image", 4, &Info::imageCB, this);
-		odom_sub = nh->subscribe("/odom", 10, &Info::odomCB, this);
-		laser_sub = nh->subscribe("/scan", 10, &Info::laserCB, this);
+		img_sub = it.subscribe("/camera/image", 4, &Robot::imageCB, this);
+		odom_sub = nh->subscribe("/odom", 10, &Robot::odomCB, this);
+		laser_sub = nh->subscribe("/scan", 10, &Robot::laserCB, this);
 		pub = nh->advertise<geometry_msgs::Twist>("/cmd_vel", 3);
 		pos = cv::Point(0, 0);
-		dist = 0.0;
-		rad = 0.0;
+		laser_dist = 0.0;
 	}
 
 	void odomCB(const nav_msgs::Odometry::ConstPtr &msg)
@@ -68,7 +67,7 @@ public:
 
 	void laserCB(const sensor_msgs::LaserScan &laser)
 	{
-		dist = laser.ranges[0];
+		laser_dist = laser.ranges[0];
 	}
 
 	void imageCB(const sensor_msgs::ImageConstPtr &msg)
@@ -102,7 +101,7 @@ public:
 
 	void getDistance(float *dist_ptr)
 	{
-		*dist_ptr = dist;
+		*dist_ptr = laser_dist;
 	}
 
 	void setSpeed(double v = 0, double w = 0)
@@ -113,30 +112,40 @@ public:
 	}
 };
 
-/* -------- GLOBAL VALUES -------- */
-cv::Point2d p(0.0, 0.0);
-double rad = 0.0;
-float dist = 0.0;
-/* ############################### */
-
-int main(int argc, char *argv[])
+class Actions : public Robot
 {
-	ros::init(argc, argv, "main");
-	ros::NodeHandle nh;
+private:
+	bool turn;
+	bool walk;
+	int angles[3];
+	int i;
+	cv::Point2d p1;
+	cv::Point2d p;
+	double rad;
+	float dist;
 
-	Info robot = Info(&nh);
-
-	bool turn = false;
-	bool walk = true;
-	int angles[3] = {90, 180, 270};
-	int i = 0;
-	cv::Point2d p1(0, 0);
-
-	ros::Rate loop(10);
-	while (nh.ok())
+public:
+	Actions(ros::NodeHandle *nh) : Robot(nh)
 	{
-		// robot.getDistance(&dist);
-		robot.getPosition(&p, &rad);
+		// Infos
+		p = {0.0, 0.0};
+		rad = 0.0;
+		dist = 0.0;
+
+		// makeSquare
+		turn = false;
+		walk = true;
+		angles[0] = 90;
+		angles[1] = 180;
+		angles[2] = 270;
+		i = 0;
+		p1 = {0.0, 0.0};
+	}
+
+	void makeSquare()
+	{
+		getDistance(&dist);
+		getPosition(&p, &rad);
 		double d = pow((pow((p.x - p1.x), 2) + pow((p.y - p1.y), 2)), 0.5);
 
 		if (walk && !turn)
@@ -145,7 +154,7 @@ int main(int argc, char *argv[])
 			if (d > 0.8)
 			{
 				p1 = p;
-				robot.setSpeed();
+				setSpeed();
 				walk = false;
 				if (i == 3)
 					turn = false;
@@ -154,7 +163,7 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				robot.setSpeed(0.3, 0);
+				setSpeed(0.3, 0);
 			}
 		}
 		else if (!walk && turn)
@@ -162,7 +171,7 @@ int main(int argc, char *argv[])
 			if (rad >= angles[i] && rad < angles[i] + 5)
 			{
 				std::cout << "\n\n\ndebug: turn ENDED\n\n\n";
-				robot.setSpeed();
+				setSpeed();
 				turn = false;
 				walk = true;
 				i++;
@@ -170,7 +179,7 @@ int main(int argc, char *argv[])
 			else
 			{
 				std::cout << "debug: turn\n";
-				robot.setSpeed(0, 0.3);
+				setSpeed(0, 0.3);
 			}
 		}
 		else
@@ -182,10 +191,22 @@ int main(int argc, char *argv[])
 			}
 			else
 			{
-				robot.setSpeed(0, 0.3);
+				setSpeed(0, 0.3);
 			}
 		}
+	}
+};
 
+int main(int argc, char *argv[])
+{
+	ros::init(argc, argv, "main");
+	ros::NodeHandle nh;
+	Actions robot = Actions(&nh);
+
+	ros::Rate loop(10);
+	while (nh.ok())
+	{
+		robot.makeSquare();
 		ros::spinOnce();
 		loop.sleep();
 	}
