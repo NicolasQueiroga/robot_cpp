@@ -302,7 +302,7 @@ cv::Rect cropImg(cv::Mat bgr, std::string direction)
     return roi;
 }
 
-double linearRegression(cv::Mat bgr, std::string direction)
+double linearRegression(cv::Mat bgr, cv::Point *pmin, std::string direction)
 {
     cv::Mat mask;
     cv::Rect roi;
@@ -346,6 +346,7 @@ double linearRegression(cv::Mat bgr, std::string direction)
     a = (n * xysum - xsum * ysum) / (n * x2sum - xsum * xsum);
     b = (x2sum * ysum - xsum * xysum) / (x2sum * n - xsum * xsum);
 
+    *pmin = cv::Point(xmin, ymin);
     ymin = a * xmin + b;
     ymax = a * xmax + b;
     cv::line(bgr, cv::Point(xmin, ymin), cv::Point(xmax, ymax), cv::Scalar(255, 255, 0), 2);

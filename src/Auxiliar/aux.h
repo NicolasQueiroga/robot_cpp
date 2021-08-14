@@ -30,6 +30,6 @@ double getAngleWithVertical(double m);
 /* functions for use with ROS */
 std::vector<cv::Point> getAllContoursCenter(cv::Mat bgr, std::vector<std::vector<cv::Point>> contours, cv::Rect roi, std::string direction = "");
 cv::Rect cropImg(cv::Mat bgr, std::string direction = "");
-double linearRegression(cv::Mat bgr, std::string direction = "");
+double linearRegression(cv::Mat bgr, cv::Point *pmin = nullptr, std::string direction = "");
 
 #endif
