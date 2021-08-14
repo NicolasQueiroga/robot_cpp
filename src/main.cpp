@@ -18,9 +18,6 @@
 #include <string>
 #include <math.h>
 
-using namespace std;
-using namespace cv;
-
 class Robot
 {
 protected:
@@ -33,6 +30,10 @@ protected:
 	geometry_msgs::Twist msg;
 	cv::Point2d pos;
 	float laser_dist;
+	cv::Point pmin;
+	cv::Point pcenter;
+	bool gotCenter;
+	double angularCoef;
 
 public:
 	Robot(ros::NodeHandle *nh)
@@ -42,8 +43,12 @@ public:
 		odom_sub = nh->subscribe("/odom", 10, &Robot::odomCB, this);
 		laser_sub = nh->subscribe("/scan", 10, &Robot::laserCB, this);
 		pub = nh->advertise<geometry_msgs::Twist>("/cmd_vel", 3);
-		pos = cv::Point(0, 0);
+		pos = cv::Point2d(0, 0);
 		laser_dist = 0.0;
+		pmin = cv::Point(0, 0);
+		pcenter = cv::Point(0, 0);
+		gotCenter = false;
+		angularCoef = 0.0;
 	}
 	~Robot() {}
 
@@ -91,6 +96,12 @@ public:
 
 	cv::Mat imgProc(cv::Mat bgr)
 	{
+		if (!gotCenter)
+		{
+			pcenter = cv::Point(bgr.size().width / 2, bgr.size().height / 2);
+			gotCenter = true;
+		}
+		angularCoef = linearRegression(bgr, &pmin);
 		return bgr;
 	}
 
@@ -124,6 +135,7 @@ private:
 	cv::Point2d p;
 	double rad;
 	float dist;
+	int limit;
 
 public:
 	Actions(ros::NodeHandle *nh) : Robot(nh)
@@ -141,6 +153,9 @@ public:
 		angles[2] = 270;
 		i = 0;
 		p1 = {0.0, 0.0};
+
+		// followRoad
+		limit = 10;
 	}
 
 	void makeSquare()
@@ -196,6 +211,26 @@ public:
 			}
 		}
 	}
+
+	void followRoad()
+	{
+		if ((pcenter.x - limit <= pmin.x) && ((pcenter.x + limit >= pmin.x)))
+		{
+			setSpeed(0.3, 0);
+			if ((angularCoef > -0.19) && (angularCoef < 0.19))
+				setSpeed(0.42, 0);
+		}
+		else
+		{
+			double delta = pmin.x - pcenter.x;
+			double max_delta = pcenter.x;
+			double k = (delta / max_delta) * 0.25 + tan(angularCoef) / 360;
+			if (k != k)
+				setSpeed(0, 0.1);
+			else
+				setSpeed(0.2, -k);
+		}
+	}
 };
 
 int main(int argc, char *argv[])
@@ -207,7 +242,9 @@ int main(int argc, char *argv[])
 	ros::Rate loop(10);
 	while (nh.ok())
 	{
-		robot.makeSquare();
+		// robot.makeSquare();
+		robot.followRoad();
+
 		ros::spinOnce();
 		loop.sleep();
 	}
