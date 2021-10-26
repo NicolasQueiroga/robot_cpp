@@ -102,6 +102,10 @@ public:
 			gotCenter = true;
 		}
 		angularCoef = linearRegression(bgr, &pmin);
+		std::vector<int> ids; 
+		detectAruco(&bgr, &ids);
+		for (int i : ids)
+			std::cout << "aruco id " << i << "\n";
 		return bgr;
 	}
 

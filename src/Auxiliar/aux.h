@@ -12,6 +12,7 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
+#include <opencv2/aruco.hpp>
 
 /* Function Deffinitions */
 std::vector<int> colorPicker(std::string path = "");
@@ -31,5 +32,6 @@ double getAngleWithVertical(double m);
 std::vector<cv::Point> getAllContoursCenter(cv::Mat bgr, std::vector<std::vector<cv::Point>> contours, cv::Rect roi, std::string direction = "");
 cv::Rect cropImg(cv::Mat bgr, std::string direction = "");
 double linearRegression(cv::Mat bgr, cv::Point *pmin = nullptr, std::string direction = "");
+void detectAruco(cv::Mat *bgr, std::vector<int> *id);
 
 #endif

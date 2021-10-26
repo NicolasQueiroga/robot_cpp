@@ -7,8 +7,8 @@
 =============================================================================*/
 
 #include "aux.h"
-#include <iostream>
 #include <vector>
+#include <iostream>
 #include <string>
 #include <math.h>
 
@@ -352,4 +352,13 @@ double linearRegression(cv::Mat bgr, cv::Point *pmin, std::string direction)
     cv::line(bgr, cv::Point(xmin, ymin), cv::Point(xmax, ymax), cv::Scalar(255, 255, 0), 2);
 
     return a;
+}
+
+void detectAruco(cv::Mat *bgr, std::vector<int> *ids)
+{
+    cv::Ptr<cv::aruco::Dictionary> dictionary = cv::aruco::getPredefinedDictionary(cv::aruco::DICT_6X6_250);
+    cv::Ptr<cv::aruco::DetectorParameters> parameters = cv::aruco::DetectorParameters::create();
+    std::vector<std::vector<cv::Point2f>> markerCorners, rejectedCandidates;
+    std::vector<int> markerIds;
+    cv::aruco::detectMarkers(*bgr, dictionary, markerCorners, *ids, parameters, rejectedCandidates);
 }
