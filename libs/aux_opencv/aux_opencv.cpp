@@ -1,16 +1,8 @@
-/*=============================================================================
-#  Author:           Nicolas Queiroga - https://github.com/NicolasQueiroga/
-#  Email:            n.macielqueiroga@gmail.com
-#  FileName:         aux.cpp
-#  Description:      file that contains auxiliary functions to use with opencv
-#  Version:          0.0.1
-=============================================================================*/
-
-#include "aux.h"
 #include <vector>
 #include <iostream>
 #include <string>
 #include <math.h>
+#include "aux_opencv.hpp"
 
 std::vector<int> colorPicker(std::string path)
 {
