@@ -14,10 +14,6 @@ find_package(catkin REQUIRED COMPONENTS
 )
 find_package(OpenCV REQUIRED)
 
-include_directories(
-  ${OpenCV_INCLUDE_DIRS}
-  ${catkin_INCLUDE_DIRS}
-)
 add_library(aux_opencv SHARED ${CMAKE_CURRENT_SOURCE_DIR}/libs/aux_opencv/aux_opencv.cpp)
 add_library(robot SHARED ${CMAKE_CURRENT_SOURCE_DIR}/libs/robot/robot.cpp)
 add_library(actions SHARED ${CMAKE_CURRENT_SOURCE_DIR}/libs/robot/actions.cpp)
